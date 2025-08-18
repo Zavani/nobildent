@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Shield, BarChart3, Calendar, Download, LogOut, Phone, Edit, Trash2, Eye, EyeOff } from "lucide-react";
+import { Shield, BarChart3, Calendar, Download, LogOut, Phone, Edit, Trash2, Eye, EyeOff, Check, Plus } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import CallConfirmModal from "@/components/call-confirm-modal";
+import BookingModal from "@/components/booking-modal";
 import type { Programare } from "@shared/schema";
 
 type AdminView = 'login' | 'dashboard' | 'appointments' | 'exports';
@@ -47,11 +47,7 @@ export default function Admin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [callModalData, setCallModalData] = useState<{ isOpen: boolean; patientName: string; appointmentId: string }>({
-    isOpen: false,
-    patientName: '',
-    appointmentId: ''
-  });
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -141,28 +137,16 @@ export default function Admin() {
     loginMutation.mutate({ username, password });
   };
 
-  const handleCall = (appointment: Programare) => {
-    setCallModalData({
-      isOpen: true,
-      patientName: appointment.nume,
-      appointmentId: appointment.id
-    });
+  const handleDirectCall = (phoneNumber: string) => {
+    // Open phone dialer with the patient's number
+    window.open(`tel:${phoneNumber}`, '_self');
   };
 
-  const handleConfirmAttendance = () => {
+  const handleConfirmAppointment = (appointmentId: string) => {
     updateStatusMutation.mutate({
-      id: callModalData.appointmentId,
+      id: appointmentId,
       status: 'confirmed'
     });
-    setCallModalData({ isOpen: false, patientName: '', appointmentId: '' });
-  };
-
-  const handleReschedule = () => {
-    updateStatusMutation.mutate({
-      id: callModalData.appointmentId,
-      status: 'rescheduled'
-    });
-    setCallModalData({ isOpen: false, patientName: '', appointmentId: '' });
   };
 
   const handleDelete = (appointmentId: string) => {
@@ -358,6 +342,14 @@ export default function Admin() {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-3xl font-bold text-neon-blue" data-testid="text-appointments-title">Gestionare Programări</h2>
+                <button
+                  onClick={() => setIsBookingModalOpen(true)}
+                  className="bg-neon-blue hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2"
+                  data-testid="button-add-appointment"
+                >
+                  <Plus size={20} />
+                  <span>Adaugă Programare</span>
+                </button>
               </div>
               
               <div className="glass-morphism rounded-xl overflow-hidden">
@@ -411,12 +403,27 @@ export default function Admin() {
                             <td className="p-4">
                               <div className="flex space-x-2">
                                 <button 
-                                  onClick={() => handleCall(appointment)}
+                                  onClick={() => handleDirectCall(appointment.telefon)}
                                   className="bg-green-500 hover:bg-green-600 p-2 rounded-lg transition-colors"
                                   title="Sună Pacientul"
                                   data-testid={`button-call-${appointment.id}`}
                                 >
                                   <Phone size={16} />
+                                </button>
+                                <button 
+                                  onClick={() => handleConfirmAppointment(appointment.id)}
+                                  className={`p-2 rounded-lg transition-colors ${
+                                    appointment.status === 'confirmed' 
+                                      ? 'bg-green-500 text-white' 
+                                      : 'bg-blue-500 hover:bg-blue-600'
+                                  }`}
+                                  title={appointment.status === 'confirmed' ? 'Confirmat' : 'Confirmă'}
+                                  data-testid={`button-confirm-${appointment.id}`}
+                                >
+                                  <Check size={16} />
+                                  {appointment.status === 'confirmed' && (
+                                    <span className="ml-1 text-xs">Confirmat</span>
+                                  )}
                                 </button>
                                 <button 
                                   onClick={() => handleDelete(appointment.id)}
@@ -491,12 +498,9 @@ export default function Admin() {
         </div>
       </div>
 
-      <CallConfirmModal
-        isOpen={callModalData.isOpen}
-        onClose={() => setCallModalData({ isOpen: false, patientName: '', appointmentId: '' })}
-        patientName={callModalData.patientName}
-        onConfirm={handleConfirmAttendance}
-        onReschedule={handleReschedule}
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
       />
     </div>
   );

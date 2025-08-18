@@ -190,7 +190,7 @@ export default function Home() {
               className="bg-gradient-to-r from-neon-blue to-electric-purple px-8 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition-all duration-300 neon-glow"
               data-testid="button-booking-hero"
             >
-              <span className="mr-2">📅</span>Rezervă o Programare
+              <span className="mr-2">📅</span>Fă o Programare!
             </button>
             <button className="glass-morphism px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/20 transition-all duration-300" data-testid="button-video-hero">
               <span className="mr-2">▶️</span>Vizionează Clinica

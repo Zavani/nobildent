@@ -11,7 +11,8 @@ const bookingSchema = z.object({
   nume: z.string().min(2, "Numele trebuie să aibă cel puțin 2 caractere"),
   email: z.string().email("Adresa de email nu este validă"),
   telefon: z.string().min(10, "Numărul de telefon trebuie să aibă cel puțin 10 cifre"),
-  dataProgramare: z.string().min(1, "Data și ora sunt obligatorii"),
+  dataZi: z.string().min(1, "Data este obligatorie"),
+  oraSlot: z.string().min(1, "Ora este obligatorie"),
   serviciu: z.string().min(1, "Serviciul este obligatoriu"),
   mesaj: z.string().optional(),
 });
@@ -38,7 +39,17 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   const createAppointmentMutation = useMutation({
     mutationFn: async (data: BookingForm) => {
-      await apiRequest("POST", "/api/appointments", data);
+      // Combine date and time into datetime-local format
+      const dataProgramare = `${data.dataZi}T${data.oraSlot}`;
+      const appointmentData = {
+        nume: data.nume,
+        email: data.email,
+        telefon: data.telefon,
+        dataProgramare,
+        serviciu: data.serviciu,
+        mesaj: data.mesaj,
+      };
+      await apiRequest("POST", "/api/appointments", appointmentData);
     },
     onSuccess: () => {
       toast({
@@ -64,10 +75,23 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     createAppointmentMutation.mutate(data);
   };
 
-  // Set minimum date to tomorrow
+  // Set minimum date to tomorrow at 9:00 AM
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(9, 0, 0, 0);
   const minDate = tomorrow.toISOString().slice(0, 16);
+
+  // Generate time slots from 9:00 to 17:00 in 30-minute intervals
+  const generateTimeSlots = () => {
+    const slots = [];
+    for (let hour = 9; hour < 17; hour++) {
+      slots.push(`${hour.toString().padStart(2, '0')}:00`);
+      slots.push(`${hour.toString().padStart(2, '0')}:30`);
+    }
+    return slots;
+  };
+
+  const timeSlots = generateTimeSlots();
 
   if (!isOpen) return null;
 
@@ -129,16 +153,35 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
           </div>
           
           <div>
-            <label className="block text-white mb-2 text-sm font-medium">Data și Ora</label>
+            <label className="block text-white mb-2 text-sm font-medium">Data Programării</label>
             <input 
-              {...register("dataProgramare")}
-              type="datetime-local" 
-              min={minDate}
+              {...register("dataZi")}
+              type="date" 
+              min={tomorrow.toISOString().slice(0, 10)}
               className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:border-neon-blue focus:outline-none transition-colors"
-              data-testid="input-data-programare"
+              data-testid="input-data-zi"
             />
-            {errors.dataProgramare && (
-              <p className="text-red-400 text-sm mt-1" data-testid="error-data-programare">{errors.dataProgramare.message}</p>
+            {errors.dataZi && (
+              <p className="text-red-400 text-sm mt-1" data-testid="error-data-zi">{errors.dataZi.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-white mb-2 text-sm font-medium">Ora Programării</label>
+            <select 
+              {...register("oraSlot")}
+              className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:border-neon-blue focus:outline-none transition-colors"
+              data-testid="select-ora-slot"
+            >
+              <option value="" className="bg-gray-800">Selectează ora</option>
+              {timeSlots.map((slot) => (
+                <option key={slot} value={slot} className="bg-gray-800">
+                  {slot}
+                </option>
+              ))}
+            </select>
+            {errors.oraSlot && (
+              <p className="text-red-400 text-sm mt-1" data-testid="error-ora-slot">{errors.oraSlot.message}</p>
             )}
           </div>
 

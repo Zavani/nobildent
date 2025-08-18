@@ -47,9 +47,11 @@ Key features:
 - **Accessibility**: Screen reader support and keyboard navigation
 
 ## Business Logic
-- Appointment booking system with real-time validation
+- Appointment booking system with 30-minute time slots (9:00-17:00)
 - Admin dashboard for appointment management including status updates
-- Call confirmation workflow for appointment verification
+- Direct phone dialing functionality from admin panel
+- One-click appointment confirmation with visual feedback
+- Admin panel appointment booking capability
 - Export functionality for appointment data
 
 # External Dependencies
