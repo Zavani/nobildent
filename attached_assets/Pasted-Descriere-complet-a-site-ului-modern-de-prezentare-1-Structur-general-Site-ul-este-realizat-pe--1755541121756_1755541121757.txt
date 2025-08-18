@@ -1,0 +1,102 @@
+Descriere completă a site-ului modern de prezentare
+1. Structură generală
+
+Site-ul este realizat pe un design one-page modern (pentru prezentare) și o pagină separată pentru Admin.
+Accentul cade pe estetică modernă (glass morphism, animații fluide, parallax) și pe funcționalitate practică (modul de programări).
+
+2. Design modern
+
+Glass Morphism: carduri, pop-up-uri și formulare cu transparență și blur.
+
+Parallax scrolling: imagini de fundal care dau senzația de adâncime.
+
+Animații moderne: fade-in la derulare, hover effects pe carduri, micro-interacțiuni la butoane.
+
+Paletă de culori: fundal închis cu accente neon (albastru/mov).
+
+Responsive: adaptabil pe desktop, tabletă și mobil.
+
+3. Secțiuni principale
+
+Hero Section cu imagine/video în fundal (parallax) și buton CTA: „Programează-te acum”.
+
+Despre Noi – carduri cu efect de sticlă.
+
+Servicii – prezentare prin carduri animate.
+
+Galerie / Portofoliu – grilă modernă cu lightbox.
+
+Testimoniale – slider cu tranziții fluide.
+
+Modul de Programări (Pop-up)
+
+La apăsarea pe butonul „Rezervă o programare”, se deschide un pop-up cu efect glass morphism.
+
+Formular:
+
+Nume și Prenume
+
+Email
+
+Telefon
+
+Dată și Oră (selector de tip calendar)
+
+Mesaj opțional
+
+Validare în timp real.
+
+După trimitere, apare un mesaj animat de confirmare.
+
+4. Integrarea bazei de date – Neon Postgres
+
+Toate programările trimise prin pop-up sunt salvate într-o bază de date Postgres găzduită pe platforma Neon.
+
+Structura tabelului ar putea arăta astfel:
+
+CREATE TABLE programari (
+    id SERIAL PRIMARY KEY,
+    nume VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    telefon VARCHAR(20) NOT NULL,
+    data_programare TIMESTAMP NOT NULL,
+    mesaj TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+
+Avantaje Neon Postgres:
+
+Scalabilitate cloud-native.
+
+Conexiune rapidă și sigură prin URL unic.
+
+Posibilitate de backup și replicare automată.
+
+5. Pagina de Admin
+
+Login Page cu efect glass morphism:
+
+User: Razvan
+
+Password: 1234
+
+După logare, se intră într-un Dashboard modern, unde:
+
+Se afișează toate programările salvate în baza de date Neon Postgres.
+
+Adminul poate vizualiza, edita sau șterge programări.
+
+Există opțiunea de export în Excel sau PDF.
+
+Grafice animate (line chart / bar chart) pentru vizualizarea programărilor pe zile/săptămâni/lună.
+
+6. Experiența utilizatorului
+
+Navigare fluidă cu meniu sticky.
+
+Animații subtile care creează un efect premium.
+
+Confirmare instantă pentru programări.
+
+Performanță ridicată cu încărcare rapidă și lazy loading.
