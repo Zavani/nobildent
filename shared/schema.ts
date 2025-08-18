@@ -11,6 +11,7 @@ export const programari = pgTable("programari", {
   email: varchar("email", { length: 150 }).notNull(),
   telefon: varchar("telefon", { length: 20 }).notNull(),
   dataProgramare: timestamp("data_programare").notNull(),
+  serviciu: varchar("serviciu", { length: 200 }).notNull(),
   mesaj: text("mesaj"),
   status: appointmentStatusEnum("status").default('pending').notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -21,7 +22,8 @@ export const insertProgramareSchema = createInsertSchema(programari).omit({
   createdAt: true,
   status: true,
 }).extend({
-  dataProgramare: z.string().datetime(),
+  dataProgramare: z.string().min(1, "Data și ora sunt obligatorii"),
+  serviciu: z.string().min(1, "Serviciul este obligatoriu"),
 });
 
 export const selectProgramareSchema = createSelectSchema(programari);

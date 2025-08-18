@@ -379,6 +379,7 @@ export default function Admin() {
                           <th className="p-4 text-left">Pacient</th>
                           <th className="p-4 text-left">Contact</th>
                           <th className="p-4 text-left">Data & Ora</th>
+                          <th className="p-4 text-left">Serviciu</th>
                           <th className="p-4 text-left">Status</th>
                           <th className="p-4 text-left">Acțiuni</th>
                         </tr>
@@ -396,6 +397,11 @@ export default function Admin() {
                             </td>
                             <td className="p-4" data-testid={`text-appointment-date-${appointment.id}`}>
                               {new Date(appointment.dataProgramare).toLocaleString('ro-RO')}
+                            </td>
+                            <td className="p-4">
+                              <span className="text-sm text-neon-blue font-medium" data-testid={`text-service-${appointment.id}`}>
+                                {appointment.serviciu || 'N/A'}
+                              </span>
                             </td>
                             <td className="p-4">
                               <span className={`px-3 py-1 rounded-full text-xs ${getStatusColor(appointment.status)}`} data-testid={`status-${appointment.id}`}>

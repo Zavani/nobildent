@@ -25,11 +25,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Database Schema
 The application uses two main tables:
-- **programari**: Stores appointment data including patient information, appointment datetime, status, and optional messages
+- **programari**: Stores appointment data including patient information, appointment datetime, selected service, status, and optional messages
 - **users**: Admin user authentication system
 
 Key features:
 - Appointment status tracking (pending, confirmed, rescheduled, completed, cancelled)
+- Service selection for each appointment (Tratamente Generale, Estetica Dentară, Implantologie, etc.)
 - UUID primary keys for all entities
 - Timestamp tracking for created dates
 

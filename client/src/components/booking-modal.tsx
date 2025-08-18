@@ -12,6 +12,7 @@ const bookingSchema = z.object({
   email: z.string().email("Adresa de email nu este validă"),
   telefon: z.string().min(10, "Numărul de telefon trebuie să aibă cel puțin 10 cifre"),
   dataProgramare: z.string().min(1, "Data și ora sunt obligatorii"),
+  serviciu: z.string().min(1, "Serviciul este obligatoriu"),
   mesaj: z.string().optional(),
 });
 
@@ -74,7 +75,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" data-testid="modal-booking">
       <div className="glass-morphism rounded-2xl p-8 max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-2xl font-bold text-neon-blue" data-testid="text-booking-title">Rezervă o Programare</h3>
+          <h3 className="text-2xl font-bold text-neon-blue" data-testid="text-booking-title">Fă o Programare</h3>
           <button 
             onClick={onClose} 
             className="text-gray-400 hover:text-white transition-colors"
@@ -127,7 +128,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             )}
           </div>
           
-          <div className="floating-label">
+          <div>
+            <label className="block text-white mb-2 text-sm font-medium">Data și Ora</label>
             <input 
               {...register("dataProgramare")}
               type="datetime-local" 
@@ -135,9 +137,28 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:border-neon-blue focus:outline-none transition-colors"
               data-testid="input-data-programare"
             />
-            <label className="floating-label-text">Data și Ora</label>
             {errors.dataProgramare && (
               <p className="text-red-400 text-sm mt-1" data-testid="error-data-programare">{errors.dataProgramare.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-white mb-2 text-sm font-medium">Serviciu Dorit</label>
+            <select 
+              {...register("serviciu")}
+              className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:border-neon-blue focus:outline-none transition-colors"
+              data-testid="select-serviciu"
+            >
+              <option value="" className="bg-gray-800">Selectează serviciul</option>
+              <option value="Tratamente Generale" className="bg-gray-800">Tratamente Generale</option>
+              <option value="Estetica Dentară" className="bg-gray-800">Estetica Dentară</option>
+              <option value="Implantologie" className="bg-gray-800">Implantologie</option>
+              <option value="Ortodonție" className="bg-gray-800">Ortodonție</option>
+              <option value="Chirurgie Orală" className="bg-gray-800">Chirurgie Orală</option>
+              <option value="Pedodonție" className="bg-gray-800">Pedodonție</option>
+            </select>
+            {errors.serviciu && (
+              <p className="text-red-400 text-sm mt-1" data-testid="error-serviciu">{errors.serviciu.message}</p>
             )}
           </div>
           
@@ -163,7 +184,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             ) : (
               <>
                 <Calendar className="inline mr-2" size={20} />
-                Trimite Programarea
+                Finalizează Programarea
               </>
             )}
           </button>
