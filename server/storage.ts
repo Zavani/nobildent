@@ -48,7 +48,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAppointments(): Promise<Programare[]> {
-    return await db.select().from(programari).orderBy(desc(programari.dataProgramare));
+    const appointments = await db.select().from(programari).orderBy(desc(programari.dataProgramare));
+    console.log('Appointments fetched from DB:', appointments);
+    return appointments;
   }
 
   async getAppointmentById(id: string): Promise<Programare | undefined> {

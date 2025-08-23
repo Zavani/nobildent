@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Shield, BarChart3, Calendar, Download, LogOut, Phone, Edit, Trash2, Eye, EyeOff, Check, Plus } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import BookingModal from "@/components/booking-modal";
 import type { Programare } from "@shared/schema";
+import * as xlsx from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import Papa from 'papaparse';
 
 type AdminView = 'login' | 'dashboard' | 'appointments' | 'exports';
 
@@ -48,9 +53,23 @@ export default function Admin() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        await apiRequest("GET", "/api/admin/verify");
+        setCurrentView('dashboard');
+      } catch (error) {
+        setCurrentView('login');
+      }
+    };
+    verifyUser();
+  }, []);
 
   // Login mutation
   const loginMutation = useMutation({
@@ -155,10 +174,88 @@ export default function Admin() {
     }
   };
 
+  const handleExport = async (format: 'xlsx' | 'pdf' | 'csv') => {
+    try {
+      const response = await fetch(`/api/export?startDate=${startDate}&endDate=${endDate}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const appointments: Programare[] = await response.json();
+
+      const data = appointments.map(apt => ({
+        'Nume': apt.nume,
+        'Email': apt.email,
+        'Telefon': apt.telefon,
+        'Data Programare': new Date(apt.dataProgramare).toLocaleString('ro-RO'),
+        'Serviciu': apt.serviciu,
+        'Status': apt.status,
+        'Mesaj': apt.mesaj,
+      }));
+
+      if (format === 'xlsx') {
+        const worksheet = xlsx.utils.json_to_sheet(data);
+        const workbook = xlsx.utils.book_new();
+        xlsx.utils.book_append_sheet(workbook, worksheet, 'Programari');
+        xlsx.writeFile(workbook, 'programari.xlsx');
+      } else if (format === 'pdf') {
+        const doc = new jsPDF();
+        (doc as any).autoTable({
+          head: [['Nume', 'Email', 'Telefon', 'Data Programare', 'Serviciu', 'Status', 'Mesaj']],
+          body: data.map(apt => [apt.Nume, apt.Email, apt.Telefon, apt['Data Programare'], apt.Serviciu, apt.Status, apt.Mesaj]),
+        });
+        doc.save('programari.pdf');
+      } else if (format === 'csv') {
+        const csv = Papa.unparse(data);
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'programari.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      toast({
+        title: "Succes!",
+        description: `Fișierul ${format.toUpperCase()} a fost descărcat.`,
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Eroare",
+        description: `Nu s-a putut descărca fișierul ${format.toUpperCase()}.`,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", "/api/admin/logout");
+    },
+    onSuccess: () => {
+      setCurrentView('login');
+      setUsername('');
+      setPassword('');
+      toast({
+        title: "Succes!",
+        description: "Te-ai deconectat cu succes.",
+        variant: "default",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Eroare",
+        description: "Nu s-a putut realiza deconectarea.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const logout = () => {
-    setCurrentView('login');
-    setUsername('');
-    setPassword('');
+    logoutMutation.mutate();
   };
 
   if (currentView === 'login') {
@@ -327,11 +424,48 @@ export default function Admin() {
               
               <div className="glass-morphism rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-4" data-testid="text-chart-title">Evoluția Programărilor</h3>
-                <div className="h-64 bg-gradient-to-r from-neon-blue/20 to-electric-purple/20 rounded-lg flex items-center justify-center">
-                  <div className="text-center">
-                    <BarChart3 size={48} className="text-neon-blue mb-2 mx-auto" />
-                    <p data-testid="text-chart-placeholder">Grafic Programări</p>
-                  </div>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart
+                      data={Object.entries(
+                        appointments.reduce((acc, apt) => {
+                          const date = new Date(apt.dataProgramare).toLocaleDateString('ro-RO');
+                          acc[date] = (acc[date] || 0) + 1;
+                          return acc;
+                        }, {} as Record<string, number>)
+                      )
+                      .map(([date, count]) => ({ date, count }))
+                      .sort((a, b) => {
+                        const partsA = a.date.split('.');
+                        const dateA = new Date(`${partsA[2]}-${partsA[1]}-${partsA[0]}`);
+                        const partsB = b.date.split('.');
+                        const dateB = new Date(`${partsB[2]}-${partsB[1]}-${partsB[0]}`);
+                        return dateA.getTime() - dateB.getTime();
+                      })}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#00BFFF" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#00BFFF" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+                      <XAxis dataKey="date" stroke="rgba(255, 255, 255, 0.5)" />
+                      <YAxis stroke="rgba(255, 255, 255, 0.5)" />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'rgba(10, 20, 40, 0.9)',
+                          borderColor: '#00BFFF',
+                          color: '#fff',
+                          borderRadius: '8px'
+                        }}
+                        itemStyle={{ color: '#fff' }}
+                        labelStyle={{ color: '#aaa' }}
+                      />
+                      <Area type="monotone" dataKey="count" name="Programări" stroke="#00BFFF" fillOpacity={1} fill="url(#colorCount)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </div>
@@ -344,7 +478,7 @@ export default function Admin() {
                 <h2 className="text-3xl font-bold text-neon-blue" data-testid="text-appointments-title">Gestionare Programări</h2>
                 <button
                   onClick={() => setIsBookingModalOpen(true)}
-                  className="bg-neon-blue hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2"
+                  className="bg-logo-brown text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2"
                   data-testid="button-add-appointment"
                 >
                   <Plus size={20} />
@@ -459,6 +593,8 @@ export default function Admin() {
                         <label className="block text-sm text-gray-400 mb-2">De la:</label>
                         <input 
                           type="date" 
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
                           className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white"
                           data-testid="input-date-from"
                         />
@@ -467,6 +603,8 @@ export default function Admin() {
                         <label className="block text-sm text-gray-400 mb-2">Până la:</label>
                         <input 
                           type="date" 
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
                           className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white"
                           data-testid="input-date-to"
                         />
@@ -477,15 +615,15 @@ export default function Admin() {
                   <div>
                     <h3 className="text-xl font-bold mb-4">Format Export</h3>
                     <div className="space-y-4">
-                      <button className="w-full bg-green-600 hover:bg-green-700 p-4 rounded-lg transition-colors flex items-center justify-center" data-testid="button-export-excel">
+                      <button onClick={() => handleExport('xlsx')} className="w-full bg-green-600 hover:bg-green-700 p-4 rounded-lg transition-colors flex items-center justify-center" data-testid="button-export-excel">
                         <Download className="mr-3" size={20} />
                         Export Excel (.xlsx)
                       </button>
-                      <button className="w-full bg-red-600 hover:bg-red-700 p-4 rounded-lg transition-colors flex items-center justify-center" data-testid="button-export-pdf">
+                      <button onClick={() => handleExport('pdf')} className="w-full bg-red-600 hover:bg-red-700 p-4 rounded-lg transition-colors flex items-center justify-center" data-testid="button-export-pdf">
                         <Download className="mr-3" size={20} />
                         Export PDF
                       </button>
-                      <button className="w-full bg-blue-600 hover:bg-blue-700 p-4 rounded-lg transition-colors flex items-center justify-center" data-testid="button-export-csv">
+                      <button onClick={() => handleExport('csv')} className="w-full bg-blue-600 hover:bg-blue-700 p-4 rounded-lg transition-colors flex items-center justify-center" data-testid="button-export-csv">
                         <Download className="mr-3" size={20} />
                         Export CSV
                       </button>

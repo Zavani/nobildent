@@ -219,7 +219,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
           <button 
             type="submit" 
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-neon-blue to-electric-purple py-3 rounded-lg font-semibold hover:shadow-xl transition-all duration-300 neon-glow disabled:opacity-50"
+            className="w-full bg-logo-brown py-3 rounded-lg font-semibold hover:shadow-xl transition-all duration-300 disabled:opacity-50"
             data-testid="button-submit-booking"
           >
             {isSubmitting ? (

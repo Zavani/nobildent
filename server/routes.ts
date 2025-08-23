@@ -1,8 +1,13 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import jwt from "jsonwebtoken";
 import { storage } from "./storage";
 import { insertProgramareSchema } from "@shared/schema";
 import { z } from "zod";
+import xlsx from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import Papa from 'papaparse';
 
 const adminLoginSchema = z.object({
   username: z.string(),
@@ -80,12 +85,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Simple hardcoded authentication as per requirements
       if (username === 'Razvan' && password === '1234') {
+        const token = jwt.sign({ username }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: '1h' });
+        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
         res.json({ success: true, message: 'Login successful' });
       } else {
         res.status(401).json({ success: false, message: 'Invalid credentials' });
       }
     } catch (error) {
       res.status(400).json({ success: false, message: 'Invalid request data' });
+    }
+  });
+
+  app.post('/api/admin/logout', (req, res) => {
+    res.clearCookie('token');
+    res.json({ success: true, message: 'Logout successful' });
+  });
+
+  app.get('/api/admin/verify', (req, res) => {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ success: false, message: 'Not authenticated' });
+    }
+    try {
+      jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
+      res.json({ success: true, message: 'Authenticated' });
+    } catch (error) {
+      res.status(401).json({ success: false, message: 'Invalid token' });
     }
   });
 
@@ -119,6 +144,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching stats:', error);
       res.status(500).json({ message: 'Failed to fetch statistics' });
+    }
+  });
+
+  // Export route for fetching data
+  app.get('/api/export', async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+
+      let appointments = await storage.getAppointments();
+
+      if (startDate && endDate) {
+        const start = new Date(startDate as string);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(endDate as string);
+        end.setHours(23, 59, 59, 999);
+        appointments = appointments.filter(apt => {
+          const aptDate = new Date(apt.dataProgramare);
+          return aptDate >= start && aptDate <= end;
+        });
+      }
+      
+      res.json(appointments);
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      res.status(500).json({ message: 'Failed to export data' });
     }
   });
 

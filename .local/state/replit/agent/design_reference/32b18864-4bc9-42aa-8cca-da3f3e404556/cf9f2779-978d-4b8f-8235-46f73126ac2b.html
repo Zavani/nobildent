@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentaLux - Clinică Stomatologică Modernă</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'neon-blue': '#00d4ff',
+                    'neon-purple': '#8b5cf6',
+                    'dark-bg': '#0f0f23',
+                    'glass': 'rgba(255, 255, 255, 0.1)',
+                }
+            }
+        }
+    };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        .admin-panel {
+            display: none;
+        }
+        
+        .admin-panel.active {
+            display: block;
+        }
+        
+        .testimonial-slider {
+            scroll-snap-type: x mandatory;
+        }
+        
+        .testimonial-slide {
+            scroll-snap-align: start;
+        }
+    </style>
+</head>
+<body class="bg-dark-bg text-white overflow-x-hidden">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-morphism">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-tooth text-2xl text-neon-blue"></i>
+                    <span class="text-xl font-bold">DentaLux</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="hover:text-neon-blue transition-colors">Acasă</a>
+                    <a href="#about" class="hover:text-neon-blue transition-colors">Despre Noi</a>
+                    <a href="#services" class="hover:text-neon-blue transition-colors">Servicii</a>
+                    <a href="#gallery" class="hover:text-neon-blue transition-colors">Galerie</a>
+                    <a href="#testimonials" class="hover:text-neon-blue transition-colors">Testimoniale</a>
+                    <button onclick="openAppointmentModal()" class="bg-gradient-to-r from-neon-blue to-neon-purple px-4 py-2 rounded-lg hover:scale-105 transition-transform">Programare</button>
+                </div>
+                <button class="md:hidden text-xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <!-- Modern dental clinic interior with advanced equipment -->
+    <section id="home" class="relative h-screen flex items-center justify-center parallax" style="background-image: linear-gradient(rgba(15, 15, 35, 0.7), rgba(15, 15, 35, 0.7)), url('https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080');">
+        <div class="text-center z-10 max-w-4xl mx-auto px-6">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 fade-in">
+                Zâmbetul Tău 
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple">Perfect</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-gray-300 fade-in">Clinică stomatologică modernă cu tehnologie de ultimă generație</p>
+            <button onclick="openAppointmentModal()" class="bg-gradient-to-r from-neon-blue to-neon-purple px-8 py-4 rounded-xl text-lg font-semibold hover:scale-105 transition-transform neon-glow fade-in">
+                <i class="fas fa-calendar-check mr-2"></i>
+                Programează-te Acum
+            </button>
+        </div>
+        
+        <!-- Floating particles animation -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute w-2 h-2 bg-neon-blue rounded-full animate-pulse" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+            <div class="absolute w-1 h-1 bg-neon-purple rounded-full animate-pulse" style="top: 40%; left: 80%; animation-delay: 1s;"></div>
+            <div class="absolute w-3 h-3 bg-neon-blue rounded-full animate-pulse" style="top: 70%; left: 15%; animation-delay: 2s;"></div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 fade-in">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple">Despre Noi</span>
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="fade-in">
+                    <!-- Professional dental team in modern clinic -->
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Echipa medicală profesională" class="rounded-2xl shadow-2xl">
+                </div>
+                
+                <div class="space-y-6 fade-in">
+                    <h3 class="text-3xl font-bold mb-6">Excelență în Îngrijirea Dentară</h3>
+                    <p class="text-gray-300 text-lg leading-relaxed">Cu peste 15 ani de experiență, clinica noastră oferă servicii stomatologice de cea mai înaltă calitate, utilizând tehnologia de ultimă generație și cele mai moderne tehnici de tratament.</p>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="glass-morphism p-6 rounded-xl">
+                            <i class="fas fa-award text-3xl text-neon-blue mb-4"></i>
+                            <h4 class="font-semibold mb-2">15+ Ani Experiență</h4>
+                            <p class="text-sm text-gray-400">Echipă medicală cu experiență vastă</p>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl">
+                            <i class="fas fa-microscope text-3xl text-neon-purple mb-4"></i>
+                            <h4 class="font-semibold mb-2">Tehnologie Avansată</h4>
+                            <p class="text-sm text-gray-400">Echipamente de ultimă generație</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 px-6 bg-gradient-to-b from-transparent to-dark-bg">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 fade-in">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple">Serviciile Noastre</span>
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-morphism p-8 rounded-2xl hover:scale-105 transition-transform fade-in group">
+                    <div class="text-center">
+                        <i class="fas fa-tooth text-4xl text-neon-blue mb-6 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-bold mb-4">Tratamente Generale</h3>
+                        <p class="text-gray-400 mb-4">Consultații, igienizări profesionale, plombări, extracții</p>
+                        <ul class="text-sm text-gray-500 space-y-1">
+                            <li>• Consultații complete</li>
+                            <li>• Igienizare profesională</li>
+                            <li>• Plombări estetice</li>
+                            <li>• Extracții simple</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="glass-morphism p-8 rounded-2xl hover:scale-105 transition-transform fade-in group">
+                    <div class="text-center">
+                        <i class="fas fa-smile text-4xl text-neon-purple mb-6 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-bold mb-4">Estetică Dentară</h3>
+                        <p class="text-gray-400 mb-4">Albiri, fațete, coroane estetice, zâmbet perfect</p>
+                        <ul class="text-sm text-gray-500 space-y-1">
+                            <li>• Albire profesională</li>
+                            <li>• Fațete din ceramică</li>
+                            <li>• Coroane estetice</li>
+                            <li>• Design de zâmbet</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="glass-morphism p-8 rounded-2xl hover:scale-105 transition-transform fade-in group">
+                    <div class="text-center">
+                        <i class="fas fa-cog text-4xl text-neon-blue mb-6 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-bold mb-4">Implantologie</h3>
+                        <p class="text-gray-400 mb-4">Implanturi dentare, proteze fixe, soluții complete</p>
+                        <ul class="text-sm text-gray-500 space-y-1">
+                            <li>• Implanturi titanium</li>
+                            <li>• Proteze fixe</li>
+                            <li>• All-on-4/All-on-6</li>
+                            <li>• Regenerare osoasă</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 fade-in">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple">Galeria Noastră</span>
+            </h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Modern dental clinic reception area -->
+                <div class="glass-morphism rounded-xl overflow-hidden hover:scale-105 transition-transform fade-in cursor-pointer" onclick="openLightbox(0)">
+                    <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Recepție modernă" class="w-full h-48 object-cover">
+                </div>
+                
+                <!-- Dental treatment room with modern equipment -->
+                <div class="glass-morphism rounded-xl overflow-hidden hover:scale-105 transition-transform fade-in cursor-pointer" onclick="openLightbox(1)">
+                    <img src="https://pixabay.com/get/g75641945b51c7d5feee2de299d53fe7c05d57eb2ae62034ec684e89c5e2094f5e99c6effc3d4daa14884feab5b98e023303ca883dbe58167509ee5fdc0a64da3_1280.jpg" alt="Cameră de tratament" class="w-full h-48 object-cover">
+                </div>
+                
+                <!-- Dental X-ray equipment -->
+                <div class="glass-morphism rounded-xl overflow-hidden hover:scale-105 transition-transform fade-in cursor-pointer" onclick="openLightbox(2)">
+                    <img src="https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Echipament radiologie" class="w-full h-48 object-cover">
+                </div>
+                
+                <!-- Dental implant procedure -->
+                <div class="glass-morphism rounded-xl overflow-hidden hover:scale-105 transition-transform fade-in cursor-pointer" onclick="openLightbox(3)">
+                    <img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Procedură implant" class="w-full h-48 object-cover">
+                </div>
+                
+                <!-- Before and after dental work -->
+                <div class="glass-morphism rounded-xl overflow-hidden hover:scale-105 transition-transform fade-in cursor-pointer" onclick="openLightbox(4)">
+                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Înainte și după" class="w-full h-48 object-cover">
+                </div>
+                
+                <!-- Dental consultation -->
+                <div class="glass-morphism rounded-xl overflow-hidden hover:scale-105 transition-transform fade-in cursor-pointer" onclick="openLightbox(5)">
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Consultație" class="w-full h-48 object-cover">
+                </div>
+                
+                <!-- Dental cleaning procedure -->
+                <div class="glass-morphism rounded-xl overflow-hidden hover:scale-105 transition-transform fade-in cursor-pointer" onclick="openLightbox(6)">
+                    <img src="https://pixabay.com/get/g8c48a3efbc8d7f1a06d727a6ff7a0dc2aef75ef41e954cd666a2c0292dcf8670de861a4b6ca0a74a1e9bfed7feafb00ad5a1d2fc4673e7285aa7d52ea8dd222d_1280.jpg" alt="Igienizare dentară" class="w-full h-48 object-cover">
+                </div>
+                
+                <!-- Modern dental technology -->
+                <div class="glass-morphism rounded-xl overflow-hidden hover:scale-105 transition-transform fade-in cursor-pointer" onclick="openLightbox(7)">
+                    <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Tehnologie modernă" class="w-full h-48 object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 px-6 bg-gradient-to-b from-transparent to-dark-bg">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 fade-in">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple">Ce Spun Pacienții</span>
+            </h2>
+            
+            <div class="relative">
+                <div class="testimonial-slider flex overflow-x-auto space-x-6 pb-4" id="testimonialSlider">
+                    <div class="testimonial-slide min-w-80 glass-morphism p-8 rounded-2xl">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-neon-blue to-neon-purple rounded-full flex items-center justify-center text-white font-bold">M</div>
+                            <div class="ml-4">
+                                <h4 class="font-bold">Maria Popescu</h4>
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">"Cea mai bună experiență la dentist! Echipa este profesionistă și tehnologia folosită este impresionantă. Recomand cu încredere!"</p>
+                    </div>
+                    
+                    <div class="testimonial-slide min-w-80 glass-morphism p-8 rounded-2xl">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-neon-purple to-neon-blue rounded-full flex items-center justify-center text-white font-bold">A</div>
+                            <div class="ml-4">
+                                <h4 class="font-bold">Andrei Ionescu</h4>
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">"Implanturile dentare realizate aici au schimbat complet viața mea. Calitate excepțională și rezultate perfecte!"</p>
+                    </div>
+                    
+                    <div class="testimonial-slide min-w-80 glass-morphism p-8 rounded-2xl">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-neon-blue to-neon-purple rounded-full flex items-center justify-center text-white font-bold">E</div>
+                            <div class="ml-4">
+                                <h4 class="font-bold">Elena Dănilă</h4>
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">"Albirea dentară a fost perfectă! Staff-ul foarte amabil și clinica are un design ultramodern. Mulțumesc!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-20 px-6">
+        <div class="container mx-auto max-w-4xl text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-8 fade-in">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple">Contactează-ne</span>
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-morphism p-6 rounded-xl fade-in">
+                    <i class="fas fa-map-marker-alt text-3xl text-neon-blue mb-4"></i>
+                    <h3 class="font-bold mb-2">Adresa</h3>
+                    <p class="text-gray-400">Strada Principală nr. 123<br>București, România</p>
+                </div>
+                
+                <div class="glass-morphism p-6 rounded-xl fade-in">
+                    <i class="fas fa-phone text-3xl text-neon-purple mb-4"></i>
+                    <h3 class="font-bold mb-2">Telefon</h3>
+                    <p class="text-gray-400">+40 721 234 567<br>+40 21 345 6789</p>
+                </div>
+                
+                <div class="glass-morphism p-6 rounded-xl fade-in">
+                    <i class="fas fa-clock text-3xl text-neon-blue mb-4"></i>
+                    <h3 class="font-bold mb-2">Program</h3>
+                    <p class="text-gray-400">Lun-Vin: 08:00-20:00<br>Sâm: 09:00-15:00</p>
+                </div>
+            </div>
+            
+            <button onclick="openAppointmentModal()" class="bg-gradient-to-r from-neon-blue to-neon-purple px-8 py-4 rounded-xl text-lg font-semibold hover:scale-105 transition-transform neon-glow">
+                <i class="fas fa-calendar-plus mr-2"></i>
+                Rezervă o Programare
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black bg-opacity-50 py-12 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-tooth text-2xl text-neon-blue"></i>
+                        <span class="text-xl font-bold">DentaLux</span>
+                    </div>
+                    <p class="text-gray-400">Clinică stomatologică modernă dedicată excelenței în îngrijirea dentară.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4 text-neon-blue">Servicii</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Tratamente generale</li>
+                        <li>Estetică dentară</li>
+                        <li>Implantologie</li>
+                        <li>Ortodonție</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4 text-neon-purple">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><i class="fas fa-phone mr-2"></i>+40 721 234 567</li>
+                        <li><i class="fas fa-envelope mr-2"></i>contact@dentalux.ro</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>București, România</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4 text-neon-blue">Urmărește-ne</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-neon-blue transition-colors"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-neon-purple transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-neon-blue transition-colors"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 DentaLux. Toate drepturile rezervate. | 
+                <button onclick="showAdminLogin()" class="text-neon-blue hover:underline">Admin</button></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Appointment Booking Modal -->
+    <div id="appointmentModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+        <div class="glass-morphism p-8 rounded-2xl max-w-md w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple">Rezervă Programare</h3>
+                <button onclick="closeAppointmentModal()" class="text-gray-400 hover:text-white text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="appointmentForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Nume și Prenume *</label>
+                    <input type="text" id="fullName" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-neon-blue focus:border-transparent" placeholder="Introduceți numele complet">
+                    <span class="text-red-400 text-sm hidden" id="fullNameError">Acest câmp este obligatoriu</span>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Email *</label>
+                    <input type="email" id="email" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-neon-blue focus:border-transparent" placeholder="exemplu@email.com">
+                    <span class="text-red-400 text-sm hidden" id="emailError">Introduceți un email valid</span>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Telefon *</label>
+                    <input type="tel" id="phone" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-neon-blue focus:border-transparent" placeholder="+40 721 234 567">
+                    <span class="text-red-400 text-sm hidden" id="phoneError">Introduceți un număr de telefon valid</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Data *</label>
+                        <input type="date" id="appointmentDate" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-neon-blue focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Ora *</label>
+                        <select id="appointmentTime" required class="w-full bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-neon-blue focus:border-transparent">
+                            <option value="">Selectează ora</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Mesaj opțional</label>
+                    <textarea id="message" rows="3" class="w-full bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-neon-blue focus:border-transparent" placeholder="Detalii despre programare..."></textarea>
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-neon-blue to-neon-purple py-3 rounded-lg font-semibold hover:scale-105 transition-transform">
+                    <i class="fas fa-calendar-check mr-2"></i>
+                    Trimite Programarea
+                </button>
+            </form>
+            
+            <div id="appointmentSuccess" class="hidden text-center">
+                <div class="text-6xl text-green-400 mb-4">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-green-400 mb-2">Programare Confirmată!</h3>
+                <p class="text-gray-300">Vă vom contacta în curând pentru confirmare.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div id="lightboxModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm">
+        <div class="relative max-w-4xl max-h-screen p-4">
+            <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white text-3xl z-10 hover:text-neon-blue">
+                <i class="fas fa-times"></i>
+            </button>
+            <img id="lightboxImage" src="" alt="" class="max-w-full max-h-full rounded-xl">
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+        <div class="glass-morphism p-8 rounded-2xl max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple">Admin Login</h3>
+            
+            <form id="adminLoginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Username</label>
+                    <input type="text" id="adminUsername" class="w-full bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-neon-blue focus:border-transparent" placeholder="Razvan">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Password</label>
+                    <input type="password" id="adminPassword" class="w-full bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-neon-blue focus:border-transparent" placeholder="••••">
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-neon-blue to-neon-purple py-3 rounded-lg font-semibold hover:scale-105 transition-transform">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Login
+                </button>
+            </form>
+            
+            <button onclick="closeAdminLogin()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-panel fixed inset-0 z-50 bg-dark-bg">
+        <div class="flex h-full">
+            <!-- Sidebar -->
+            <div class="w-64 glass-morphism p-6">
+                <div class="flex items-center space-x-2 mb-8">
+                    <i class="fas fa-tooth text-2xl text-neon-blue"></i>
+                    <span class="text-xl font-bold">DentaLux Admin</span>
+                </div>
+                
+                <nav class="space-y-4">
+                    <a href="#" onclick="showDashboardSection('appointments')" class="block px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors admin-nav-link active">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        Programări
+                    </a>
+                    <a href="#" onclick="showDashboardSection('analytics')" class="block px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors admin-nav-link">
+                        <i class="fas fa-chart-bar mr-2"></i>
+                        Analiză
+                    </a>
+                    <a href="#" onclick="logoutAdmin()" class="block px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors text-red-400">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        Logout
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="flex-1 p-8 overflow-y-auto">
+                <!-- Appointments Section -->
+                <div id="appointmentsSection" class="dashboard-section">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-3xl font-bold">Programări</h2>
+                        <div class="space-x-4">
+                            <button class="bg-gradient-to-r from-neon-blue to-neon-purple px-4 py-2 rounded-lg hover:scale-105 transition-transform">
+                                <i class="fas fa-file-excel mr-2"></i>
+                                Export Excel
+                            </button>
+                            <button class="bg-gradient-to-r from-neon-purple to-neon-blue px-4 py-2 rounded-lg hover:scale-105 transition-transform">
+                                <i class="fas fa-file-pdf mr-2"></i>
+                                Export PDF
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-morphism rounded-2xl overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-white bg-opacity-5">
+                                <tr>
+                                    <th class="px-6 py-4 text-left">ID</th>
+                                    <th class="px-6 py-4 text-left">Nume</th>
+                                    <th class="px-6 py-4 text-left">Email</th>
+                                    <th class="px-6 py-4 text-left">Telefon</th>
+                                    <th class="px-6 py-4 text-left">Data</th>
+                                    <th class="px-6 py-4 text-left">Ora</th>
+                                    <th class="px-6 py-4 text-left">Acțiuni</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointmentsTable">
+                                <!-- Sample data - in real implementation, this would be populated from database -->
+                                <tr class="border-t border-white border-opacity-10">
+                                    <td class="px-6 py-4">001</td>
+                                    <td class="px-6 py-4">Maria Popescu</td>
+                                    <td class="px-6 py-4">maria@email.com</td>
+                                    <td class="px-6 py-4">0721234567</td>
+                                    <td class="px-6 py-4">2024-01-15</td>
+                                    <td class="px-6 py-4">10:00</td>
+                                    <td class="px-6 py-4">
+                                        <button class="text-neon-blue hover:text-white mr-2" title="Editează">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-400 hover:text-white" title="Șterge">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="border-t border-white border-opacity-10">
+                                    <td class="px-6 py-4">002</td>
+                                    <td class="px-6 py-4">Andrei Ionescu</td>
+                                    <td class="px-6 py-4">andrei@email.com</td>
+                                    <td class="px-6 py-4">0721234568</td>
+                                    <td class="px-6 py-4">2024-01-16</td>
+                                    <td class="px-6 py-4">14:00</td>
+                                    <td class="px-6 py-4">
+                                        <button class="text-neon-blue hover:text-white mr-2" title="Editează">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-400 hover:text-white" title="Șterge">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Analytics Section -->
+                <div id="analyticsSection" class="dashboard-section hidden">
+                    <h2 class="text-3xl font-bold mb-8">Analiză Programări</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="glass-morphism p-6 rounded-xl">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400">Total Programări</p>
+                                    <p class="text-3xl font-bold text-neon-blue">156</p>
+                                </div>
+                                <i class="fas fa-calendar-check text-3xl text-neon-blue"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-morphism p-6 rounded-xl">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400">Luna Aceasta</p>
+                                    <p class="text-3xl font-bold text-neon-purple">42</p>
+                                </div>
+                                <i class="fas fa-chart-line text-3xl text-neon-purple"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-morphism p-6 rounded-xl">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400">Astăzi</p>
+                                    <p class="text-3xl font-bold text-neon-blue">8</p>
+                                </div>
+                                <i class="fas fa-clock text-3xl text-neon-blue"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-morphism p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4">Programări pe Săptămână</h3>
+                        <div class="h-64 flex items-end space-x-4">
+                            <!-- Simple bar chart visualization -->
+                            <div class="flex-1 bg-gradient-to-t from-neon-blue to-transparent rounded-t" style="height: 60%"></div>
+                            <div class="flex-1 bg-gradient-to-t from-neon-purple to-transparent rounded-t" style="height: 80%"></div>
+                            <div class="flex-1 bg-gradient-to-t from-neon-blue to-transparent rounded-t" style="height: 45%"></div>
+                            <div class="flex-1 bg-gradient-to-t from-neon-purple to-transparent rounded-t" style="height: 90%"></div>
+                            <div class="flex-1 bg-gradient-to-t from-neon-blue to-transparent rounded-t" style="height: 70%"></div>
+                            <div class="flex-1 bg-gradient-to-t from-neon-purple to-transparent rounded-t" style="height: 55%"></div>
+                            <div class="flex-1 bg-gradient-to-t from-neon-blue to-transparent rounded-t" style="height: 35%"></div>
+                        </div>
+                        <div class="flex justify-between mt-2 text-sm text-gray-400">
+                            <span>Lun</span>
+                            <span>Mar</span>
+                            <span>Mie</span>
+                            <span>Joi</span>
+                            <span>Vin</span>
+                            <span>Sâm</span>
+                            <span>Dum</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Database connection configuration
+            const neonConfig = {
+                connectionString: 'postgresql://neondb_owner:npg_JwPxN0y6IbHv@ep-rough-haze-a2098clp-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+            };
+
+            // Fade-in animation on scroll
+            function setupScrollAnimations() {
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.fade-in').forEach(el => {
+                    observer.observe(el);
+                });
+            }
+
+            // Smooth scrolling for navigation links
+            function setupSmoothScrolling() {
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+            }
+
+            // Appointment modal functions
+            window.openAppointmentModal = function() {
+                document.getElementById('appointmentModal').classList.remove('hidden');
+                document.getElementById('appointmentModal').classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            };
+
+            window.closeAppointmentModal = function() {
+                document.getElementById('appointmentModal').classList.add('hidden');
+                document.getElementById('appointmentModal').classList.remove('flex');
+                document.body.style.overflow = 'auto';
+                
+                // Reset form
+                document.getElementById('appointmentForm').reset();
+                document.getElementById('appointmentForm').style.display = 'block';
+                document.getElementById('appointmentSuccess').classList.add('hidden');
+                
+                // Hide error messages
+                document.querySelectorAll('.text-red-400').forEach(el => {
+                    el.classList.add('hidden');
+                });
+            };
+
+            // Form validation
+            function validateForm() {
+                let isValid = true;
+                
+                const fullName = document.getElementById('fullName');
+                const email = document.getElementById('email');
+                const phone = document.getElementById('phone');
+                const appointmentDate = document.getElementById('appointmentDate');
+                const appointmentTime = document.getElementById('appointmentTime');
+                
+                // Reset errors
+                document.querySelectorAll('.text-red-400').forEach(el => {
+                    el.classList.add('hidden');
+                });
+                
+                if (!fullName.value.trim()) {
+                    document.getElementById('fullNameError').classList.remove('hidden');
+                    isValid = false;
+                }
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email.value)) {
+                    document.getElementById('emailError').classList.remove('hidden');
+                    isValid = false;
+                }
+                
+                const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+                if (!phoneRegex.test(phone.value)) {
+                    document.getElementById('phoneError').classList.remove('hidden');
+                    isValid = false;
+                }
+                
+                if (!appointmentDate.value || !appointmentTime.value) {
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+
+            // Handle appointment form submission
+            document.getElementById('appointmentForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!validateForm()) {
+                    return;
+                }
+                
+                // TODO: Implement actual database insertion using Neon PostgreSQL
+                // const appointmentData = {
+                //     nume: document.getElementById('fullName').value,
+                //     email: document.getElementById('email').value,
+                //     telefon: document.getElementById('phone').value,
+                //     data_programare: `${document.getElementById('appointmentDate').value} ${document.getElementById('appointmentTime').value}:00`,
+                //     mesaj: document.getElementById('message').value
+                // };
+                
+                // Simulate successful submission
+                setTimeout(() => {
+                    document.getElementById('appointmentForm').style.display = 'none';
+                    document.getElementById('appointmentSuccess').classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        closeAppointmentModal();
+                    }, 3000);
+                }, 1000);
+            });
+
+            // Lightbox functionality
+            const galleryImages = [
+                'https://images.unsplash.com/photo-1629909613654-28e377c37b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=800',
+                'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=800',
+                'https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=800',
+                'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=800',
+                'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=800',
+                'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=800',
+                'https://images.unsplash.com/photo-1609840114855-9755dfb4c510?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=800',
+                'https://images.unsplash.com/photo-1551601651-2a8555f1a136?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=800'
+            ];
+
+            window.openLightbox = function(index) {
+                const modal = document.getElementById('lightboxModal');
+                const image = document.getElementById('lightboxImage');
+                
+                image.src = galleryImages[index];
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            };
+
+            window.closeLightbox = function() {
+                const modal = document.getElementById('lightboxModal');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            };
+
+            // Admin functionality
+            window.showAdminLogin = function() {
+                document.getElementById('adminLoginModal').classList.remove('hidden');
+                document.getElementById('adminLoginModal').classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            };
+
+            window.closeAdminLogin = function() {
+                document.getElementById('adminLoginModal').classList.add('hidden');
+                document.getElementById('adminLoginModal').classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            };
+
+            window.showDashboardSection = function(section) {
+                // Hide all sections
+                document.querySelectorAll('.dashboard-section').forEach(el => {
+                    el.classList.add('hidden');
+                });
+                
+                // Show selected section
+                document.getElementById(section + 'Section').classList.remove('hidden');
+                
+                // Update navigation
+                document.querySelectorAll('.admin-nav-link').forEach(el => {
+                    el.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            };
+
+            window.logoutAdmin = function() {
+                document.getElementById('adminDashboard').classList.remove('active');
+                document.body.style.overflow = 'auto';
+            };
+
+            // Handle admin login
+            document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('adminUsername').value;
+                const password = document.getElementById('adminPassword').value;
+                
+                if (username === 'Razvan' && password === '1234') {
+                    closeAdminLogin();
+                    document.getElementById('adminDashboard').classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    alert('Date de autentificare incorecte!');
+                }
+            });
+
+            // Testimonial slider auto-scroll
+            function setupTestimonialSlider() {
+                const slider = document.getElementById('testimonialSlider');
+                let scrollPosition = 0;
+                const scrollStep = 320; // width of one testimonial card
+                
+                setInterval(() => {
+                    scrollPosition += scrollStep;
+                    if (scrollPosition >= slider.scrollWidth - slider.clientWidth) {
+                        scrollPosition = 0;
+                    }
+                    slider.scrollTo({
+                        left: scrollPosition,
+                        behavior: 'smooth'
+                    });
+                }, 5000);
+            }
+
+            // Set minimum date for appointment booking
+            function setupDatePicker() {
+                const dateInput = document.getElementById('appointmentDate');
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                dateInput.min = tomorrow.toISOString().split('T')[0];
+            }
+
+            // Initialize all functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                setupScrollAnimations();
+                setupSmoothScrolling();
+                setupTestimonialSlider();
+                setupDatePicker();
+                
+                // Close modals when clicking outside
+                window.addEventListener('click', function(e) {
+                    const appointmentModal = document.getElementById('appointmentModal');
+                    const lightboxModal = document.getElementById('lightboxModal');
+                    const adminLoginModal = document.getElementById('adminLoginModal');
+                    
+                    if (e.target === appointmentModal) {
+                        closeAppointmentModal();
+                    }
+                    if (e.target === lightboxModal) {
+                        closeLightbox();
+                    }
+                    if (e.target === adminLoginModal) {
+                        closeAdminLogin();
+                    }
+                });
+            });
+
+            // TODO: Implement database operations using Neon PostgreSQL
+            // async function saveAppointment(appointmentData) {
+            //     try {
+            //         const response = await fetch('/api/appointments', {
+            //             method: 'POST',
+            //             headers: {
+            //                 'Content-Type': 'application/json',
+            //             },
+            //             body: JSON.stringify(appointmentData)
+            //         });
+            //         return await response.json();
+            //     } catch (error) {
+            //         console.error('Error saving appointment:', error);
+            //         throw error;
+            //     }
+            // }
+
+            // TODO: Implement appointment fetching for admin panel
+            // async function fetchAppointments() {
+            //     try {
+            //         const response = await fetch('/api/appointments');
+            //         return await response.json();
+            //     } catch (error) {
+            //         console.error('Error fetching appointments:', error);
+            //         throw error;
+            //     }
+            // }
+        })();
+    </script>
+</body>
+</html>
